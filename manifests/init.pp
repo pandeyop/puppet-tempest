@@ -10,10 +10,10 @@ class tempest(
   #
   $tempest_repo_uri          = 'git://github.com/openstack/tempest.git',
   $tempest_repo_revision     = undef,
-  $tempest_clone_path        = '/var/lib/tempest',
+  $tempest_clone_path        = '/home/om/tempest',
   $tempest_clone_owner       = 'root',
 
-  $setup_venv                = false,
+  $setup_venv                = true,
 
   # Glance image config
   #
@@ -115,6 +115,24 @@ class tempest(
   }
 
   $tempest_conf = "${tempest_clone_path}/etc/tempest.conf"
+  
+  exec { 'init_testr':
+  command => '/usr/local/bin/testr init',
+  creates => '/home/om/tempest/.testrepository/',
+  cwd     => $tempest_clone_path,
+#  unless => '/home/om/tempest/.testrepository/',  
+#path    => $tempest_clone_path,
+  } ->
+  exec { 'run-tests':
+    command => "/usr/local/bin/testr run *",
+    cwd     => $tempest_clone_path,
+    require => [
+        Vcsrepo[$tempest_clone_path],
+        Exec['install-tox'],
+        Package[$tempest::params::dev_packages],
+      ],
+  }
+
 
   file { $tempest_conf:
     replace => false,
