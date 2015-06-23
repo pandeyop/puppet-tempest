@@ -58,9 +58,27 @@ class tempest(
   $admin_password            = undef,
   $admin_tenant_name         = undef,
   $admin_role                = undef,
+  # compute features
+  $run_ssh                   = undef,
+  $ssh_auth_method           = undef,
+  $ssh_connect_method        = undef,
+  $ssh_user                  = undef,
+  $boot_from_volume_only     = undef,
+  $disk_config               = undef,
+  $api_extensions            = undef,
+  $change_password           = undef,
+  $console_output            = undef,
+  # oslo configs
+  $lock_path                 = undef,
+  $process_locking           = undef,
+  # validation
+  $run_validation            = undef,
+  $connect_method            = undef,
+  $auth_method               = undef, 
+
   # flavor information
-  $flavor_name                = undef,
-  $flavor_name_alt            = undef,
+  $flavor_name               = undef,
+  $flavor_name_alt           = undef,
   $flavor_ref                = undef,
   $flavor_ref_alt            = undef,
   # whitebox
@@ -159,13 +177,22 @@ class tempest(
   }
 
   tempest_config {
-    'DEFAULT/lock_path':                 value => $lock_path;
+    'auth/allow_tenant_isolation':       value => $allow_tenant_isolation;
     'compute/change_password_available': value => $change_password_available;
     'compute/image_alt_ssh_user':        value => $image_alt_ssh_user;
     'compute/image_ssh_user':            value => $image_ssh_user;
     'compute/resize_available':          value => $resize_available;
-    'compute/allow_tenant_isolation':    value => $allow_tenant_isolation;
     'compute/fixed_network_name':        value => $fixed_network_name;
+    'compute/run_ssh':			 value => $run_ssh;
+    'compute/ssh_auth_method':           value => $ssh_auth_method;
+    'compute/ssh_connect_method':        value => $ssh_connect_method;
+    'compute/ssh_user':			 value => $ssh_user		
+    'compute-feature-enabled/boot_from_volume_only': value => $boot_from_volume_only;
+    'compute-feature-enabled/disk_config': value => $disk_config;
+    'compute-feature-enabled/api_extensions': value => $api_extensions;
+    'compute-feature-enabled/change_password': value => $change_password;
+    'compute-feature-enabled/console_output': value => $console_output;
+    'compute-feature-enabled/resize': value => $resize;
     'identity/admin_password':           value => $admin_password, secret => true;
     'identity/admin_tenant_name':        value => $admin_tenant_name_orig;
     'identity/admin_username':           value => $admin_username;
@@ -180,6 +207,8 @@ class tempest(
     'identity/username':                 value => $username;
     'network/public_router_id':          value => $public_router_id;
     'network/fixed_network_name':        value => $fixed_network_name;
+    'oslo_concurrency/lock_path':        value => $lock_path;
+    'oslo_concurrency/disable_process_locking':value => $process_locking;
     'service_available/cinder':          value => $cinder_available;
     'service_available/glance':          value => $glance_available;
     'service_available/heat':            value => $heat_available;
@@ -189,6 +218,9 @@ class tempest(
     'service_available/swift':           value => $swift_available;
     'whitebox/db_uri':                   value => $whitebox_db_uri;
     'cli/cli_dir':                       value => $cli_dir;
+    'validation/run_validation':         value => $run_validation;
+    'validation/connect_method':         value => $connect_method;
+    'validation/auth_method':            value => $auth_method;
     'volume/storage_protocol':           value => $volume_storage_protocol;
   }
 
